@@ -16,6 +16,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "lvgl.h"
+#include "ui.h"
 
 #if CONFIG_EXAMPLE_LCD_CONTROLLER_ILI9341
 #include "esp_lcd_ili9341.h"
@@ -35,7 +36,7 @@ static const char *TAG = "example";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// Please update the following configuration according to your LCD spec //////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define EXAMPLE_LCD_PIXEL_CLOCK_HZ     (20 * 1000 * 1000)
+#define EXAMPLE_LCD_PIXEL_CLOCK_HZ     (60 * 1000 * 1000)
 #define EXAMPLE_LCD_BK_LIGHT_ON_LEVEL  1
 #define EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL !EXAMPLE_LCD_BK_LIGHT_ON_LEVEL
 #define EXAMPLE_PIN_NUM_SCLK           14
@@ -59,7 +60,7 @@ static const char *TAG = "example";
 #define EXAMPLE_LCD_CMD_BITS           8
 #define EXAMPLE_LCD_PARAM_BITS         8
 
-#define EXAMPLE_LVGL_TICK_PERIOD_MS    2
+#define EXAMPLE_LVGL_TICK_PERIOD_MS    1
 
 
 #if CONFIG_EXAMPLE_LCD_TOUCH_ENABLED
@@ -162,6 +163,11 @@ static void example_increase_lvgl_tick(void *arg)
 {
     /* Tell LVGL how many milliseconds has elapsed */
     lv_tick_inc(EXAMPLE_LVGL_TICK_PERIOD_MS);
+}
+
+
+static void show_pupil_on_screen(lv_disp_t* disp) {
+    lv_obj_t *scr = lv_disp_get_scr_act(disp);
 }
 
 void app_main(void)
@@ -296,9 +302,9 @@ void app_main(void)
     lv_indev_drv_register(&indev_drv);
 #endif
 
-    ESP_LOGI(TAG, "Display LVGL Meter Widget");
-    example_lvgl_demo_ui(disp);
-
+   // ESP_LOGI(TAG, "Display LVGL Meter Widget");
+    //example_lvgl_demo_ui(disp);
+    ui_init();
     while (1) {
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
         vTaskDelay(pdMS_TO_TICKS(10));
