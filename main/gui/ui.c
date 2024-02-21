@@ -7,29 +7,29 @@
 #include "ui_helpers.h"
 
 ///////////////////// VARIABLES ////////////////////
-void image_Animation(lv_obj_t * TargetObject, int delay);
-void eye_Animation(lv_obj_t * TargetObject, int delay);
-
+void image_Animation(lv_obj_t *TargetObject, int delay);
+void eye_Animation(lv_obj_t *TargetObject, int delay);
+void playAnimations();
 
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
-lv_obj_t * ui_Screen1;
-lv_obj_t * ui_Image3;
-lv_obj_t * ui_Image1;
-lv_obj_t * ui____initial_actions0;
+lv_obj_t *ui_Screen1;
+lv_obj_t *ui_Image3;
+lv_obj_t *ui_Image1;
+lv_obj_t *ui____initial_actions0;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
-    #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
+#error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-#if LV_COLOR_16_SWAP !=1
-    #error "LV_COLOR_16_SWAP should be 1 to match SquareLine Studio's settings"
+#if LV_COLOR_16_SWAP != 1
+#error "LV_COLOR_16_SWAP should be 1 to match SquareLine Studio's settings"
 #endif
 
 ///////////////////// ANIMATIONS ////////////////////
-void image_Animation(lv_obj_t * TargetObject, int delay)
+void image_Animation(lv_obj_t *TargetObject, int delay)
 {
-    ui_anim_user_data_t * PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
+    ui_anim_user_data_t *PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
     PropertyAnimation_0_user_data->target = TargetObject;
     PropertyAnimation_0_user_data->val = -1;
     lv_anim_t PropertyAnimation_0;
@@ -48,11 +48,10 @@ void image_Animation(lv_obj_t * TargetObject, int delay)
     lv_anim_set_early_apply(&PropertyAnimation_0, false);
     lv_anim_set_get_value_cb(&PropertyAnimation_0, &_ui_anim_callback_get_y);
     lv_anim_start(&PropertyAnimation_0);
-
 }
-void eye_Animation(lv_obj_t * TargetObject, int delay)
+void eye_Animation(lv_obj_t *TargetObject, int delay)
 {
-    ui_anim_user_data_t * PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
+    ui_anim_user_data_t *PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
     PropertyAnimation_0_user_data->target = TargetObject;
     PropertyAnimation_0_user_data->val = -1;
     lv_anim_t PropertyAnimation_0;
@@ -71,21 +70,27 @@ void eye_Animation(lv_obj_t * TargetObject, int delay)
     lv_anim_set_early_apply(&PropertyAnimation_0, false);
     lv_anim_set_get_value_cb(&PropertyAnimation_0, &_ui_anim_callback_get_x);
     lv_anim_start(&PropertyAnimation_0);
-
 }
 
 ///////////////////// FUNCTIONS ////////////////////
+
+void playAnimations()
+{
+    eye_Animation(ui_Image3, 0);
+    image_Animation(ui_Image1, 0);
+    gpio_get_level(4);
+}
 
 ///////////////////// SCREENS ////////////////////
 
 void ui_init(void)
 {
-    lv_disp_t * dispp = lv_disp_get_default();
-    lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
-                                               false, LV_FONT_DEFAULT);
+    lv_disp_t *dispp = lv_disp_get_default();
+    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
+                                              false, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
     ui_Screen1_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_Screen1);
-    eye_Animation(ui_Image3, 0);
+    playAnimations();
 }
