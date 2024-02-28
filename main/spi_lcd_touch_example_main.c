@@ -301,7 +301,6 @@ void app_main(void)
 
     lv_indev_drv_register(&indev_drv);
 #endif
-
    // ESP_LOGI(TAG, "Display LVGL Meter Widget");
     //example_lvgl_demo_ui(disp);
     ui_init();

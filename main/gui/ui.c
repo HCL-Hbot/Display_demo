@@ -3,8 +3,14 @@
 // LVGL version: 8.3.6
 // Project name: SquareLine_Project
 
+#include <stdio.h>
 #include "ui.h"
 #include "ui_helpers.h"
+#include "driver/gpio.h"
+
+// Define GPIO pins for the switches
+#define SWITCH_1_GPIO 4
+#define SWITCH_2_GPIO 18
 
 ///////////////////// VARIABLES ////////////////////
 void image_Animation(lv_obj_t *TargetObject, int delay);
@@ -76,9 +82,19 @@ void eye_Animation(lv_obj_t *TargetObject, int delay)
 
 void playAnimations()
 {
+    //     gpio_config_t io_conf = {
+    //     .pin_bit_mask = (1ULL << 4),
+    //     .mode = GPIO_MODE_INPUT,
+    // };
+
+    // gpio_config(&io_conf);
+
+    int status = 1; 
+    //int status = gpio_get_level(GPIO_NUM_4);;
     eye_Animation(ui_Image3, 0);
     image_Animation(ui_Image1, 0);
-    gpio_get_level(4);
+    printf("Hello\n");
+    printf("%d\n", status);
 }
 
 ///////////////////// SCREENS ////////////////////
@@ -92,5 +108,8 @@ void ui_init(void)
     ui_Screen1_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_Screen1);
+
     playAnimations();
+    gpio_set_direction(SWITCH_1_GPIO, GPIO_MODE_INPUT);
+    
 }
