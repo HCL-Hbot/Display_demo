@@ -3,62 +3,62 @@
 // LVGL version: 8.3.6
 // Project name: SquareLine_Project
 
-#include <stdio.h>
 #include "ui.h"
 #include "ui_helpers.h"
 #include "driver/gpio.h"
-//#include "freertos/task.h"
 
-// Define GPIO pins for the switches
 #define SWITCH_1_GPIO 4
 #define SWITCH_2_GPIO 18
 
+
 ///////////////////// VARIABLES ////////////////////
-void image_Animation(lv_obj_t *TargetObject, int delay);
-void eye_Animation(lv_obj_t *TargetObject, int delay);
-void playAnimations();
+void image_Animation(lv_obj_t * TargetObject, int delay);
+void eye_Animation(lv_obj_t * TargetObject, int delay);
+
 
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
-lv_obj_t *ui_Screen1;
-lv_obj_t *ui_Image3;
-lv_obj_t *ui_Image1;
-lv_obj_t *ui____initial_actions0;
+void ui_event_Screen1(lv_event_t * e);
+lv_obj_t * ui_Screen1;
+lv_obj_t * ui_Image3;
+void ui_event_Image1(lv_event_t * e);
+lv_obj_t * ui_Image1;
+lv_obj_t * ui____initial_actions0;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
-#error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
+    #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-#if LV_COLOR_16_SWAP != 1
-#error "LV_COLOR_16_SWAP should be 1 to match SquareLine Studio's settings"
+#if LV_COLOR_16_SWAP !=1
+    #error "LV_COLOR_16_SWAP should be 1 to match SquareLine Studio's settings"
 #endif
 
 ///////////////////// ANIMATIONS ////////////////////
-void image_Animation(lv_obj_t *TargetObject, int delay)
+void image_Animation(lv_obj_t * TargetObject, int delay)
 {
-    ui_anim_user_data_t *PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
+    ui_anim_user_data_t * PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
     PropertyAnimation_0_user_data->target = TargetObject;
     PropertyAnimation_0_user_data->val = -1;
     lv_anim_t PropertyAnimation_0;
     lv_anim_init(&PropertyAnimation_0);
-    lv_anim_set_time(&PropertyAnimation_0, 2000);
+    lv_anim_set_time(&PropertyAnimation_0, 1000);
     lv_anim_set_user_data(&PropertyAnimation_0, PropertyAnimation_0_user_data);
     lv_anim_set_custom_exec_cb(&PropertyAnimation_0, _ui_anim_callback_set_y);
-    lv_anim_set_values(&PropertyAnimation_0, -300, 0);
+    lv_anim_set_values(&PropertyAnimation_0, 0, 250);
     lv_anim_set_path_cb(&PropertyAnimation_0, lv_anim_path_linear);
     lv_anim_set_delay(&PropertyAnimation_0, delay + 0);
     lv_anim_set_deleted_cb(&PropertyAnimation_0, _ui_anim_callback_free_user_data);
-    lv_anim_set_playback_time(&PropertyAnimation_0, 1000);
-    lv_anim_set_playback_delay(&PropertyAnimation_0, 250);
+    lv_anim_set_playback_time(&PropertyAnimation_0, 7500);
+    lv_anim_set_playback_delay(&PropertyAnimation_0, 500);
     lv_anim_set_repeat_count(&PropertyAnimation_0, LV_ANIM_REPEAT_INFINITE);
-    lv_anim_set_repeat_delay(&PropertyAnimation_0, 3000);
-    lv_anim_set_early_apply(&PropertyAnimation_0, false);
-    lv_anim_set_get_value_cb(&PropertyAnimation_0, &_ui_anim_callback_get_y);
+    lv_anim_set_repeat_delay(&PropertyAnimation_0, 5000);
+    lv_anim_set_early_apply(&PropertyAnimation_0, true);
     lv_anim_start(&PropertyAnimation_0);
+
 }
-void eye_Animation(lv_obj_t *TargetObject, int delay)
+void eye_Animation(lv_obj_t * TargetObject, int delay)
 {
-    ui_anim_user_data_t *PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
+    ui_anim_user_data_t * PropertyAnimation_0_user_data = lv_mem_alloc(sizeof(ui_anim_user_data_t));
     PropertyAnimation_0_user_data->target = TargetObject;
     PropertyAnimation_0_user_data->val = -1;
     lv_anim_t PropertyAnimation_0;
@@ -77,47 +77,39 @@ void eye_Animation(lv_obj_t *TargetObject, int delay)
     lv_anim_set_early_apply(&PropertyAnimation_0, false);
     lv_anim_set_get_value_cb(&PropertyAnimation_0, &_ui_anim_callback_get_x);
     lv_anim_start(&PropertyAnimation_0);
+
 }
 
 ///////////////////// FUNCTIONS ////////////////////
-
-void playAnimations()
+void ui_event_Screen1(lv_event_t * e)
 {
-    //     gpio_config_t io_conf = {
-    //     .pin_bit_mask = (1ULL << 4),
-    //     .mode = GPIO_MODE_INPUT,
-    // };
-
-    // gpio_config(&io_conf);
-
-    //int status = 1; 
-    //xTaskCreate(task1, "Task1", NULL, STACK_SIZE, NULL);
-    int status = gpio_get_level(GPIO_NUM_4);
-    eye_Animation(ui_Image3, 0);
-    image_Animation(ui_Image1, 0);
-    printf("Hello\n");
-    printf("%d\n", status);
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_VALUE_CHANGED) {
+        image_Animation(ui_Image1, 0);
+    }
+}
+void ui_event_Image1(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_KEY &&  lv_event_get_key(e) == LV_KEY_ENTER) {
+        image_Animation(ui_Image1, 0);
+    }
 }
 
 ///////////////////// SCREENS ////////////////////
 
 void ui_init(void)
 {
-    lv_disp_t *dispp = lv_disp_get_default();
-    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
-                                              false, LV_FONT_DEFAULT);
+    lv_disp_t * dispp = lv_disp_get_default();
+    lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
+                                               false, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
     ui_Screen1_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_Screen1);
+    eye_Animation(ui_Image3, 0);
+    image_Animation(ui_Image1, 0);
 
-    playAnimations();
-        gpio_config_t io_conf = {
-         .pin_bit_mask = (1ULL << 4),
-         .mode = GPIO_MODE_INPUT,
-     };
-
-    gpio_config(&io_conf);
-    gpio_set_direction(SWITCH_1_GPIO, GPIO_MODE_INPUT);
-    
 }
